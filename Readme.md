@@ -13,6 +13,7 @@ This will compile your coffee script and deployed it as a .js file.
   </bean>
 ```
 * Added to the wanted target in the postprocessor list.
+
 #### Properties
 * deleteOriginal
-    Deletes the original .coffee script from the deployed target
+Deletes the original .coffee script from the deployed target
