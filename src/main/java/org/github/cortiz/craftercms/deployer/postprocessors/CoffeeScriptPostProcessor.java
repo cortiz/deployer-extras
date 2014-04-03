@@ -1,7 +1,10 @@
 package org.github.cortiz.craftercms.deployer.postprocessors;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,12 +46,26 @@ public class CoffeeScriptPostProcessor implements PublishingProcessor {
             compiler.createContext();
         } catch (URISyntaxException e) {
             log.error("Unable to load context", e);
-            throw new PublishingException()
+            throw new PublishingException("Unable to create Coffee Compiler Context", e);
         }
         List<String> files = collectCoffeeFiles(publishedChangeSet);
         String root = Utils.getFilesRoot(publishingTarget, parameters, siteName);
         for (String file : files) {
             compileCoffee(root + File.separator + file);
+        }
+        if (deleteOriginal) {
+            for (String file : files) {
+                try {
+                    Files.delete(Paths.get(file));
+                } catch (IOException e) {
+                    throw new PublishingException("Unable to delete files ", e);
+                }
+            }
+        }
+        if(publishedChangeSet.getDeletedFiles()!=null) {
+            for (String delete : publishedChangeSet.getDeletedFiles()) {
+                deleteCompile(root + File.separator + delete);
+            }
         }
     }
 
@@ -62,6 +79,17 @@ public class CoffeeScriptPostProcessor implements PublishingProcessor {
             log.error("Unable to write " + file + " due DefaultConfigurableProvider error", e);
         }
         log.info("File {} was written", outputFile);
+    }
+
+    private void deleteCompile(final String file) {
+        String outputFile = file.replaceAll(FILE_POSTFIX, FILE_OUTPOSTFIX);
+        log.info("Processing {} to {}", file, outputFile);
+        try {
+            new File(outputFile).delete();
+        } catch (Exception e) {
+            log.error("Unable to delete " + file, e);
+        }
+        log.info("File {} was deleted", outputFile);
     }
 
     @Override
@@ -105,8 +133,11 @@ public class CoffeeScriptPostProcessor implements PublishingProcessor {
     public void setSiteName(String siteName) {
         this.siteName = siteName;
     }
+
     @Required
     public void setDeleteOriginal(final boolean deleteOriginal) {
         this.deleteOriginal = deleteOriginal;
     }
+
+
 }

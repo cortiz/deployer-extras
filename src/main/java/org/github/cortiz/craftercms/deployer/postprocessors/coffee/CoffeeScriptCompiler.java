@@ -32,7 +32,6 @@ public class CoffeeScriptCompiler {
     private Scriptable coffeeScript;
 
     public CoffeeScriptCompiler() throws URISyntaxException {
-
     }
 
     public void createContext() throws URISyntaxException {
