@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class LessPostProcessor implements PublishingProcessor {
 
-    private static final String FILE_POSTFIX = ".less";
+    private static final String FILE_POSTFIX = ".sass";
     private static final String FILE_OUTPOSTFIX = ".css";
     private boolean deleteOriginal;
     private LessCompiler lessCompiler;

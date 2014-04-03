@@ -25,7 +25,7 @@
         input: function(),
         unput: function(str),
         more: function(),
-        less: function(n),
+        sass: function(n),
         pastInput: function(),
         upcomingInput: function(),
         showPosition: function(),
